@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(uuid())
+  email     String    @unique
+  password  String    @db.VarChar(120)
+  username  String
+  role      Role      @default(USER)
+  status    Status    @default(PENDING)
+  lastLogin DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  Profile   Profile?
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  firstname String? @db.VarChar(50)
+  lastname  String? @db.VarChar(50)
+  bio       String?
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String  @unique
+}
+
+model Customer {
+  id        String   @id @db.Char(8)
+  name      String
+  lastname  String?
+  email     String?  @unique
+  phone     String?
+  // appointments Appointment[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Service {
+  id        Int      @id @default(autoincrement())
+  name      String
+  price     Float
+  duration  Int? // Duración del servicio en minutos
+  // appointments Appointment[],
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  USER
+  BARBER
+  MANAGER
+}
+
+enum Status {
+  PENDING
+  ACTIVE
+  INACTIVE
+}
