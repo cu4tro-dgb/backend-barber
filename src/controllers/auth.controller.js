@@ -7,7 +7,7 @@ import { RESEND_API_KEY } from '../config.js'
 const prisma = new PrismaClient()
 const resend = new Resend(RESEND_API_KEY)
 
-const URLFrontend = 'http://localhost:8080'
+const URLFrontend = 'http://localhost:8000/'
 
 export async function login(req, res) {
   const { email, password } = req.body
